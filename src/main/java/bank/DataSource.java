@@ -35,14 +35,6 @@ public class DataSource {
             resultSet.getString("password"),
             resultSet.getInt("account_id"));
 
-        System.out.println(username + " fields: ");
-
-        System.out.println(customer.getId());
-        System.out.println(customer.getName());
-        System.out.println(customer.getUsername());
-        System.out.println(customer.getAccountId());
-        System.out.println(customer.getPwd());
-
       } catch (SQLException e) {
         e.printStackTrace();
       }
@@ -55,10 +47,53 @@ public class DataSource {
 
   }
 
+  public static Account getAccount(int accountId) {
+    String sql = "SELECT * FROM Accounts WHERE id = ?";
+    Account account = null;
+
+    try (Connection connection = connect(); 
+    PreparedStatement statement = connection.prepareStatement(sql)) {
+
+      statement.setInt(1, accountId);
+
+      try(ResultSet results = statement.executeQuery()) {
+        account = new Account(results.getInt("id"), 
+        results.getString("type"), 
+        results.getDouble("balance"));
+
+      } catch(SQLException e) {
+        e.printStackTrace();
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    return account;
+
+  }
+
   public static void main(String[] args) {
     // connect();
     String username = "lfromonte9@de.vu";
-    getCustomer(username);
+    Customer customer = getCustomer(username);
+
+    System.out.println(username + " fields: ");
+
+    System.out.println(customer.getId());
+    System.out.println(customer.getName());
+    System.out.println(customer.getUsername());
+    System.out.println(customer.getAccountId());
+    System.out.println(customer.getPwd());
+
+    int accountId = customer.getAccountId();
+
+    Account account = getAccount(accountId);
+
+    System.out.println(account.getId());
+    System.out.println(account.getType());
+    System.out.println(account.getBalance());
+
+
 
   }
 }
