@@ -6,6 +6,7 @@ public class Customer {
   private String username;
   private String pwd;
   private int accountId;
+  private boolean auth;
 
   public Customer(int id, String name, String username, String pwd, int accountId) {
     setId(id);
@@ -13,6 +14,7 @@ public class Customer {
     setUsername(username);
     setPwd(pwd);
     setAccountId(accountId);
+    setAuth(false);
   }
 
   public int getId() {
@@ -53,6 +55,14 @@ public class Customer {
 
   public void setAccountId(int accountId) {
     this.accountId = accountId;
+  }
+
+  public boolean isAuth() {
+    return auth;
+  }
+
+  public void setAuth(boolean auth) {
+    this.auth = auth;
   }
 
 }
