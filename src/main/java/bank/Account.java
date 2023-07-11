@@ -1,5 +1,9 @@
 package bank;
 
+import java.sql.SQLException;
+
+import bank.exceptions.amountException;
+
 public class Account {
   private int id;
   private String type;
@@ -33,6 +37,30 @@ public class Account {
 
   public void setBalance(double balance) {
     this.balance = balance;
+  }
+
+  public void deposit(double amount) throws amountException {
+    if (amount < 1) {
+      throw new amountException("Minimum deposit is 1.00");
+    } else {
+      double newBalance = balance + amount;
+      setBalance(newBalance);
+      // update database
+      DataSource.modifyAccountBalance(balance, id);
+
+    }
+
+  }
+
+  public void withdraw(double amount) throws amountException {
+    if (amount < 1 || amount > balance) {
+      throw new amountException("Withdrawal amount has to be greater than 1 and less than current balance. ");
+    } else {
+      double newBalance = balance - amount;
+      setBalance(newBalance);
+      DataSource.modifyAccountBalance(balance, id);
+    }
+
   }
 
 }

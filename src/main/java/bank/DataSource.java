@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+//import java.sql.Statement;
 
 public class DataSource {
   public static Connection connect() {
@@ -51,17 +52,17 @@ public class DataSource {
     String sql = "SELECT * FROM Accounts WHERE id = ?";
     Account account = null;
 
-    try (Connection connection = connect(); 
-    PreparedStatement statement = connection.prepareStatement(sql)) {
+    try (Connection connection = connect();
+        PreparedStatement statement = connection.prepareStatement(sql)) {
 
       statement.setInt(1, accountId);
 
-      try(ResultSet results = statement.executeQuery()) {
-        account = new Account(results.getInt("id"), 
-        results.getString("type"), 
-        results.getDouble("balance"));
+      try (ResultSet results = statement.executeQuery()) {
+        account = new Account(results.getInt("id"),
+            results.getString("type"),
+            results.getDouble("balance"));
 
-      } catch(SQLException e) {
+      } catch (SQLException e) {
         e.printStackTrace();
       }
     } catch (SQLException e) {
@@ -72,28 +73,47 @@ public class DataSource {
 
   }
 
-  public static void main(String[] args) {
-    // connect();
-    String username = "lfromonte9@de.vu";
-    Customer customer = getCustomer(username);
+  // Modify balance in accounts table for specific account id
+  public static void modifyAccountBalance(double amount, int accountId) {
 
-    System.out.println(username + " fields: ");
+    String sql = "Update Accounts SET balance = ? WHERE id = ?";
 
-    System.out.println(customer.getId());
-    System.out.println(customer.getName());
-    System.out.println(customer.getUsername());
-    System.out.println(customer.getAccountId());
-    System.out.println(customer.getPwd());
+    try (Connection connection = connect();
+        PreparedStatement statement = connection.prepareStatement(sql)) {
 
-    int accountId = customer.getAccountId();
+      statement.setDouble(1, amount);
+      statement.setInt(2, accountId);
 
-    Account account = getAccount(accountId);
+      statement.executeUpdate(sql);
 
-    System.out.println(account.getId());
-    System.out.println(account.getType());
-    System.out.println(account.getBalance());
-
-
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
 
   }
+
+  /*
+   * public static void main(String[] args) {
+   * // connect();
+   * String username = "lfromonte9@de.vu";
+   * Customer customer = getCustomer(username);
+   * 
+   * System.out.println(username + " fields: ");
+   * 
+   * System.out.println(customer.getId());
+   * System.out.println(customer.getName());
+   * System.out.println(customer.getUsername());
+   * System.out.println(customer.getAccountId());
+   * System.out.println(customer.getPwd());
+   * 
+   * int accountId = customer.getAccountId();
+   * 
+   * Account account = getAccount(accountId);
+   * 
+   * System.out.println(account.getId());
+   * System.out.println(account.getType());
+   * System.out.println(account.getBalance());
+   * 
+   * }
+   */
 }
